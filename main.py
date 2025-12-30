@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import time
 
 
 # Define key functions
@@ -19,8 +20,13 @@ def get_page(): # Gets page 1 with the option to return a JSON or DICT
     }
     return requests.get(url, headers=headers).text # yay
 
+
 if os.path.exists("key.txt") == False: # Check if file exists
     new_key # If it doesn't, run new_key
 
 with open("key.txt", "r") as key: # Opens key.txt
     key = key.read() # Set key to the contents of key.txt.
+
+while True:
+    time.sleep(0.25)
+    print(get_page())
