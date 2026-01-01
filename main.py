@@ -1,32 +1,25 @@
-import os
 import requests
-import json
 import time
+import pandas
+from io import StringIO
 
+pandas.set_option("display.max_rows", None)
+pandas.set_option("display.max_columns", None)
 
 # Define key functions
 
 
-def new_key(): # Makes a new key
-    with open("key.txt", "w") as key:
-        key.write(input("Please enter you DonutSMP API key that you can obtain by joining and typing \"/api\".\n   >"))
+with open("subscripts/manage_key.py", "r") as key:
+    exec(key.read())
 
 
-def get_page(): # Gets page 1 with the option to return a JSON or DICT
+def parse_page(): # Gets page 1 with the option to return a JSON or DICT
     url = "https://api.donutsmp.net/v1/auction/transactions/1"
     headers = {
         "accept": "application/json",
         "Authorization": "Bearer "+key
     }
-    return requests.get(url, headers=headers).text # yay
+    output = pandas.read_json(StringIO(requests.get(url, headers=headers).text)).drop("status", axis=1) # yay
+    return output
 
-
-if os.path.exists("key.txt") == False: # Check if file exists
-    new_key # If it doesn't, run new_key
-
-with open("key.txt", "r") as key: # Opens key.txt
-    key = key.read() # Set key to the contents of key.txt.
-
-while True:
-    time.sleep(0.25)
-    print(get_page())
+print(parse_page())
